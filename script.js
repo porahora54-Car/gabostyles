@@ -15,6 +15,13 @@ const SIZES_BY_TYPE = {
   correa: ['Talla Única / Ajustable']
 };
 
+const PRODUCT_COLORS = [
+  { name: 'Sand Tan', hex: '#e1b382' },
+  { name: 'Sand Tan Shadow', hex: '#c89666' },
+  { name: 'Night Blue', hex: '#2d545e' },
+  { name: 'Night Blue Shadow', hex: '#12343b' }
+];
+
 const PRODUCTS = [
   {
     id: 'p-cargo-01',
@@ -26,11 +33,7 @@ const PRODUCTS = [
     originalPrice: 56,
     discount: '-25%',
     description: 'Corte recto moderno con bolsillos laterales reforzados y algodón de alta densidad.',
-    colors: [
-      { name: 'Carbón', hex: '#0F172A', stageBg: '#FDE68A' },
-      { name: 'Naranja', hex: '#F97316', stageBg: '#FFFFFF' },
-      { name: 'Amarillo suave', hex: '#FDE68A', stageBg: '#FDE68A' }
-    ]
+    colors: PRODUCT_COLORS
   },
   {
     id: 'f-heavy-02',
@@ -42,11 +45,7 @@ const PRODUCTS = [
     originalPrice: 30,
     discount: '-20%',
     description: 'Algodón peinado de 260 GSM con caída estructurada y cuello ribeteado.',
-    colors: [
-      { name: 'Carbón', hex: '#0F172A', stageBg: '#FFFFFF' },
-      { name: 'Carbón suave', hex: '#0F172A', stageBg: '#FDE68A' },
-      { name: 'Blanco', hex: '#FFFFFF', stageBg: '#FDE68A' }
-    ]
+    colors: PRODUCT_COLORS
   },
   {
     id: 'c-lino-03',
@@ -58,11 +57,7 @@ const PRODUCTS = [
     originalPrice: null,
     discount: null,
     description: 'Tejido respirable de tacto suave ideal para climas cálidos y looks casuales.',
-    colors: [
-      { name: 'Naranja', hex: '#F97316', stageBg: '#FDE68A' },
-      { name: 'Carbón', hex: '#0F172A', stageBg: '#FFFFFF' },
-      { name: 'Noche', hex: '#0F172A', stageBg: '#FDE68A' }
-    ]
+    colors: PRODUCT_COLORS
   },
   {
     id: 'p-wide-04',
@@ -74,11 +69,7 @@ const PRODUCTS = [
     originalPrice: 68,
     discount: '-32%',
     description: 'Tiro alto favorecedor con pierna amplia y caída fluida en denim flexible.',
-    colors: [
-      { name: 'Carbón', hex: '#0F172A', stageBg: '#FDE68A' },
-      { name: 'Amarillo suave', hex: '#FDE68A', stageBg: '#FFFFFF' },
-      { name: 'Naranja', hex: '#F97316', stageBg: '#FDE68A' }
-    ]
+    colors: PRODUCT_COLORS
   },
   {
     id: 'f-crop-05',
@@ -90,11 +81,7 @@ const PRODUCTS = [
     originalPrice: null,
     discount: null,
     description: 'Ajuste limpio al cuerpo con acabado elástico de excelente recuperación.',
-    colors: [
-      { name: 'Amarillo suave', hex: '#FDE68A', stageBg: '#FDE68A' },
-      { name: 'Carbón', hex: '#0F172A', stageBg: '#FFFFFF' },
-      { name: 'Grafito', hex: '#0F172A', stageBg: '#FDE68A' }
-    ]
+    colors: PRODUCT_COLORS
   },
   {
     id: 'c-oversize-06',
@@ -106,11 +93,7 @@ const PRODUCTS = [
     originalPrice: null,
     discount: null,
     description: 'Botones nacarados y corte versátil para llevar suelta o fajada.',
-    colors: [
-      { name: 'Blanco', hex: '#FFFFFF', stageBg: '#FDE68A' },
-      { name: 'Carbón', hex: '#0F172A', stageBg: '#FDE68A' },
-      { name: 'Naranja', hex: '#F97316', stageBg: '#FFFFFF' }
-    ]
+    colors: PRODUCT_COLORS
   },
   {
     id: 'g-dad-07',
@@ -122,11 +105,7 @@ const PRODUCTS = [
     originalPrice: 25,
     discount: '-28%',
     description: 'Visera curva con broche metálico trasero ajustable y bordado frontal.',
-    colors: [
-      { name: 'Carbón', hex: '#0F172A', stageBg: '#FFFFFF' },
-      { name: 'Negro mate', hex: '#0F172A', stageBg: '#FDE68A' },
-      { name: 'Naranja', hex: '#F97316', stageBg: '#FDE68A' }
-    ]
+    colors: PRODUCT_COLORS
   },
   {
     id: 'a-belt-08',
@@ -138,11 +117,7 @@ const PRODUCTS = [
     originalPrice: null,
     discount: null,
     description: 'Diseño ajustable con hebilla metálica cepillada para pantalón o vestido.',
-    colors: [
-      { name: 'Obsidiana', hex: '#0F172A', stageBg: '#FDE68A' },
-      { name: 'Naranja', hex: '#F97316', stageBg: '#FFFFFF' },
-      { name: 'Carbón', hex: '#0F172A', stageBg: '#FDE68A' }
-    ]
+    colors: PRODUCT_COLORS
   }
 ];
 
@@ -412,74 +387,17 @@ function updateConsentUI() {
 }
 
 function renderProductCard(product) {
-  const colorIndex = state.selectedColors[product.id] ?? 0;
-  const activeColor = product.colors[colorIndex] || product.colors[0];
-  const sizes = SIZES_BY_TYPE[product.type];
-  const activeSize = state.selectedSizes[product.id] || sizes[0];
-
-  const swatchesHtml = product.colors
-    .map(
-      (c, idx) => `
-      <button
-        type="button"
-        class="swatch-btn ${idx === colorIndex ? 'active' : ''}"
-        style="background-color: ${c.hex};"
-        title="${c.name}"
-        aria-label="Seleccionar color ${c.name} para ${product.name}"
-        data-product-id="${product.id}"
-        data-color-index="${idx}"
-      ></button>
-    `
-    )
-    .join('');
-
-  const sizesHtml = sizes
-    .map(
-      (sz) => `
-      <button
-        type="button"
-        class="size-chip ${sz === activeSize ? 'selected' : ''}"
-        data-product-id="${product.id}"
-        data-size="${sz}"
-      >${sz}</button>
-    `
-    )
-    .join('');
-
   return `
     <article class="product-card" data-product-id="${product.id}">
       <div class="product-media-wrap">
-        ${product.promo && product.discount ? `<span class="discount-badge">${product.discount}</span>` : ''}
-        <div class="product-stage" id="stage-${product.id}" style="background-color: ${activeColor.stageBg};">
-          <img class="product-image" src="${product.image}" alt="${product.name} — foto de muestra" loading="lazy" decoding="async" />
-        </div>
-        <div class="swatches-bar" role="group" aria-label="Colores de ${product.name}">
-          ${swatchesHtml}
-        </div>
+        <img class="product-image" src="${product.image}" alt="${product.name} — foto de muestra" loading="lazy" decoding="async" />
       </div>
-
       <div class="product-body">
-        <div class="product-meta-top">
-          <span>${product.category}</span>
-          <span id="color-label-${product.id}">${activeColor.name}</span>
-        </div>
-        <h3 class="product-title">${product.name}</h3>
-        <p class="product-desc">${product.description}</p>
-
+        <span class="product-category">${product.category}</span>
         <div class="price-row">
           <span class="price-current">$${product.price.toFixed(2)}</span>
-          ${product.originalPrice ? `<span class="price-original">$${product.originalPrice.toFixed(2)}</span>` : ''}
         </div>
-
-        <div class="sizes-block">
-          <span class="sizes-label">Talla seleccionada: <strong id="size-label-${product.id}">${activeSize}</strong></span>
-          <div class="sizes-pills" role="group" aria-label="Tallas disponibles para ${product.name}">
-            ${sizesHtml}
-          </div>
-          <button type="button" class="btn-accent full-width add-to-cart-btn" data-product-id="${product.id}">
-            Añadir al Carrito
-          </button>
-        </div>
+        <button type="button" class="btn-preview" data-preview-product="${product.id}">Vista previa</button>
       </div>
     </article>
   `;
@@ -491,7 +409,7 @@ function renderProducts() {
   const mujeresGrid = document.getElementById('grid-mujeres');
   const accesoriosGrid = document.getElementById('grid-accesorios');
 
-  const promoProducts = PRODUCTS.filter((p) => p.promo);
+  const promoProducts = PRODUCTS.filter((p) => p.promo).slice(0, 4);
   promosGrid.innerHTML = promoProducts.map(renderProductCard).join('');
 
   hombresGrid.innerHTML = PRODUCTS.filter((p) => p.category === 'Hombres').map(renderProductCard).join('');
@@ -506,43 +424,74 @@ function updateProductColorInDOM(productId, colorIndex) {
   if (!colorObj) return;
 
   state.selectedColors[productId] = colorIndex;
-
-  document.querySelectorAll('.product-card').forEach((card) => {
-    if (card.dataset.productId !== productId) return;
-
-    const stage = card.querySelector(`#stage-${productId}`);
-    const colorLabel = card.querySelector(`#color-label-${productId}`);
-
-    if (stage) {
-      stage.classList.add('is-switching');
-      setTimeout(() => {
-        stage.style.backgroundColor = colorObj.stageBg;
-        stage.classList.remove('is-switching');
-      }, 130);
+  document.querySelectorAll('.swatch-btn').forEach((button) => {
+    if (button.dataset.productId === productId) {
+      button.classList.toggle('active', Number(button.dataset.colorIndex) === colorIndex);
     }
-
-    if (colorLabel) {
-      colorLabel.textContent = colorObj.name;
-    }
-
-    card.querySelectorAll('.swatch-btn').forEach((btn, idx) => {
-      btn.classList.toggle('active', idx === colorIndex);
-    });
   });
 }
 
 function updateProductSizeInDOM(productId, size) {
   state.selectedSizes[productId] = size;
-  document.querySelectorAll('.product-card').forEach((card) => {
-    if (card.dataset.productId !== productId) return;
-
-    const sizeLabel = card.querySelector(`#size-label-${productId}`);
-    if (sizeLabel) sizeLabel.textContent = size;
-
-    card.querySelectorAll('.size-chip').forEach((chip) => {
+  document.querySelectorAll('.size-chip').forEach((chip) => {
+    if (chip.dataset.productId === productId) {
       chip.classList.toggle('selected', chip.dataset.size === size);
-    });
+    }
   });
+}
+
+function openProductPreview(productId) {
+  const product = PRODUCTS.find((item) => item.id === productId);
+  if (!product) return;
+
+  const colorsHtml = product.colors.map((color, index) => `
+    <button
+      type="button"
+      class="swatch-btn ${index === state.selectedColors[product.id] ? 'active' : ''}"
+      style="background-color: ${color.hex};"
+      title="${escapeHtml(color.name)}"
+      aria-label="Seleccionar color ${escapeHtml(color.name)}"
+      data-product-id="${product.id}"
+      data-color-index="${index}"
+    ></button>
+  `).join('');
+  const sizesHtml = SIZES_BY_TYPE[product.type].map((size) => `
+    <button
+      type="button"
+      class="size-chip ${size === state.selectedSizes[product.id] ? 'selected' : ''}"
+      data-product-id="${product.id}"
+      data-size="${escapeHtml(size)}"
+    >${escapeHtml(size)}</button>
+  `).join('');
+
+  document.getElementById('product-preview-title').textContent = product.name;
+  document.getElementById('product-preview-content').innerHTML = `
+    <img class="preview-image" src="${escapeHtml(product.image)}" alt="${escapeHtml(product.name)} — foto de muestra" />
+    <div class="preview-details">
+      <span class="product-category">${escapeHtml(product.category)}</span>
+      <p class="preview-price">$${product.price.toFixed(2)}</p>
+      <div class="preview-option">
+        <span class="sizes-label">Colores disponibles</span>
+        <div class="preview-swatches" role="group" aria-label="Colores disponibles para ${escapeHtml(product.name)}">${colorsHtml}</div>
+      </div>
+      <div class="preview-option">
+        <span class="sizes-label">Tallas disponibles</span>
+        <div class="sizes-pills" role="group" aria-label="Tallas disponibles para ${escapeHtml(product.name)}">${sizesHtml}</div>
+      </div>
+      <button type="button" class="btn-accent full-width add-to-cart-btn" data-product-id="${product.id}">Agregar al carrito</button>
+    </div>
+  `;
+
+  const modal = document.getElementById('product-preview-modal');
+  modal.classList.add('is-open');
+  modal.setAttribute('aria-hidden', 'false');
+  document.getElementById('product-preview-close').focus();
+}
+
+function closeProductPreview() {
+  const modal = document.getElementById('product-preview-modal');
+  modal.classList.remove('is-open');
+  modal.setAttribute('aria-hidden', 'true');
 }
 
 // Carrusel infinito de marcas
@@ -941,6 +890,12 @@ function initMobileMenu() {
 // Delegación de eventos en tarjetas y carrito
 function initDelegatedEvents() {
   document.addEventListener('click', (e) => {
+    const previewTrigger = e.target.closest('[data-preview-product]');
+    if (previewTrigger) {
+      openProductPreview(previewTrigger.dataset.previewProduct);
+      return;
+    }
+
     const swatch = e.target.closest('.swatch-btn');
     if (swatch) {
       updateProductColorInDOM(swatch.dataset.productId, Number(swatch.dataset.colorIndex));
@@ -955,6 +910,7 @@ function initDelegatedEvents() {
 
     const addBtn = e.target.closest('.add-to-cart-btn');
     if (addBtn) {
+      closeProductPreview();
       addToCart(addBtn.dataset.productId);
       return;
     }
@@ -974,6 +930,13 @@ function initDelegatedEvents() {
   document.getElementById('cart-open-btn').addEventListener('click', openCartDrawer);
   document.getElementById('cart-close-btn').addEventListener('click', closeCartDrawer);
   document.getElementById('cart-backdrop').addEventListener('click', closeCartDrawer);
+  document.getElementById('product-preview-close').addEventListener('click', closeProductPreview);
+  document.getElementById('product-preview-modal').addEventListener('click', (e) => {
+    if (e.target.id === 'product-preview-modal') closeProductPreview();
+  });
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') closeProductPreview();
+  });
 }
 
 function initHeroCarousel() {
